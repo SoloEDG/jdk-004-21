@@ -19,6 +19,12 @@ export function StatsPanel({ doc }: { doc: GameDoc }) {
         </strong>
       </div>
       <div className="stat-row">
+        <span>发射 / 命中</span>
+        <strong className="mono">
+          {doc.stats.shots} / {doc.stats.hits}
+        </strong>
+      </div>
+      <div className="stat-row">
         <span>拾取能量</span>
         <strong className="mono">{doc.stats.collected}</strong>
       </div>

@@ -15,11 +15,25 @@ function isRecord(value: unknown): value is RunRecord {
     typeof r.victory === "boolean"
   );
 }
+/** Older records predate the shot/hit split; migrate them with zero counts. */
+function migrateRecord(record: RunRecord): RunRecord {
+  const count = (value: unknown): number =>
+    typeof value === "number" && Number.isFinite(value) && value >= 0
+      ? Math.floor(value)
+      : 0;
+  return {
+    ...record,
+    shots: count(record.shots),
+    hits: count(record.hits),
+  };
+}
 export function loadRecords(): RunRecord[] {
   try {
     if (typeof window === "undefined") return [];
     const raw = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "[]");
-    return Array.isArray(raw) ? raw.filter(isRecord).slice(0, 20) : [];
+    return Array.isArray(raw)
+      ? raw.filter(isRecord).map(migrateRecord).slice(0, 20)
+      : [];
   } catch {
     return [];
   }
@@ -29,7 +43,7 @@ export function saveRecords(records: RunRecord[]): void {
     if (typeof window !== "undefined")
       window.localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(records.slice(0, 20)),
+        JSON.stringify(records.map(migrateRecord).slice(0, 20)),
       );
   } catch {
     /* A full or disabled store cannot interrupt a run. */

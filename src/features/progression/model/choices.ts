@@ -1,6 +1,7 @@
 import type { GameDoc, WeaponId } from "../../../shared/types";
 import { random } from "../../../shared/math";
 import { UPGRADE_CATALOG } from "./catalog";
+import { createWeapon, migrateWeapon, weaponUpgradeId } from "../../arsenal/model/stats";
 export function rollChoices(doc: GameDoc): void {
   const available = UPGRADE_CATALOG.filter(
     (u) => u.id !== "recovery" && (doc.upgrades[u.id] || 0) < u.max,
@@ -32,10 +33,21 @@ export function chooseUpgrade(doc: GameDoc, id: string): void {
       doc.player.maxHp += 20;
       doc.player.hp = Math.min(doc.player.maxHp, doc.player.hp + 20);
     }
-    if (id === "pulse" || id === "orbit" || id === "nova") {
-      const weapon = doc.weapons.find((w) => w.id === id);
-      if (weapon) weapon.level++;
-      else doc.weapons.push({ id: id as WeaponId, level: 1, cooldown: 0 });
+    const weaponId = weaponUpgradeId(id);
+    if (weaponId) {
+      const weapon = doc.weapons.find((w) => w.id === weaponId);
+      if (weapon) {
+        // The level only becomes effective at the next legal shooting
+        // boundary. Ammo, heat and any running reload stay untouched, so a
+        // chain of upgrades can never manufacture a free trigger cycle.
+        migrateWeapon(weapon, doc.upgrades);
+        weapon.pendingLevels++;
+      } else {
+        // A newly unlocked weapon starts supplied; it was not in a reload.
+        doc.weapons.push(
+          createWeapon(weaponId as WeaponId, 1, doc.upgrades),
+        );
+      }
     }
   }
   doc.pendingLevels--;

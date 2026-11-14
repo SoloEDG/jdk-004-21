@@ -26,7 +26,9 @@ export function HistoryPanel({
                 <span>{r.victory ? "撤离成功" : "信号中断"}</span>
                 <span>{formatTime(r.duration)}</span>
                 <span>波次 {r.wave}</span>
-                <span>{r.kills} 击杀</span>
+                <span>
+                  {r.kills} 击杀 · {r.shots} 发射 / {r.hits} 命中
+                </span>
               </div>
             ))
         )}

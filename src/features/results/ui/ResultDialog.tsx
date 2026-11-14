@@ -1,4 +1,4 @@
-import type { GameDoc } from "../../../shared/types";
+import type { GameDoc, WeaponId } from "../../../shared/types";
 import { formatTime } from "../../../shared/math";
 export function ResultDialog({
   doc,
@@ -30,12 +30,25 @@ export function ResultDialog({
           </div>
         </div>
         <div className="damage-breakdown">
-          {Object.entries(doc.stats.byWeapon).map(([key, value]) => (
+          {(
+            Object.entries(doc.stats.byWeapon) as [
+              WeaponId,
+              number,
+            ][]
+          ).map(([key, value]) => (
             <div key={key}>
               <span>{key.toUpperCase()}</span>
-              <span>{Math.round(value)} DMG</span>
+              <span>
+                {Math.round(value)} DMG · {doc.stats.hitsByWeapon[key] || 0} 命中
+              </span>
             </div>
           ))}
+          <div className="totals">
+            <span>发射 / 命中</span>
+            <span>
+              {doc.stats.shots} / {doc.stats.hits}
+            </span>
+          </div>
         </div>
         <button className="primary" onClick={restart}>
           重新接入 ↗

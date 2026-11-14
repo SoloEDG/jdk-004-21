@@ -4,9 +4,14 @@ export function applyEvents(doc: GameDoc, events: FrameEvents): void {
   doc.stats.damage += events.damage;
   doc.stats.taken += events.taken;
   doc.stats.shots += events.shots;
+  doc.stats.hits += events.weaponHits
+    ? Object.values(events.weaponHits).reduce((sum, n) => sum + n, 0)
+    : 0;
   doc.stats.collected += events.collected;
-  for (const weapon of ["pulse", "orbit", "nova"] as const)
+  for (const weapon of ["pulse", "orbit", "nova"] as const) {
     doc.stats.byWeapon[weapon] += events.weaponDamage?.[weapon] || 0;
+    doc.stats.hitsByWeapon[weapon] += events.weaponHits?.[weapon] || 0;
+  }
 }
 export function makeRecord(doc: GameDoc): RunRecord {
   return {
@@ -16,6 +21,8 @@ export function makeRecord(doc: GameDoc): RunRecord {
     level: doc.level,
     kills: doc.stats.kills,
     damage: Math.round(doc.stats.damage),
+    shots: doc.stats.shots,
+    hits: doc.stats.hits,
     weapons: doc.weapons.map((w) => `${w.id}:${w.level}`),
     victory: doc.victory,
   };

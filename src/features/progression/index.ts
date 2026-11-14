@@ -1,5 +1,5 @@
 export { stepProgression } from "./model/stepProgression";
-export { chooseUpgrade } from "./model/choices";
+export { chooseUpgrade, rollChoices } from "./model/choices";
 export { UPGRADE_CATALOG } from "./model/catalog";
 export { xpRequired } from "./lib/experience";
 export { UpgradeDialog } from "./ui/UpgradeDialog";

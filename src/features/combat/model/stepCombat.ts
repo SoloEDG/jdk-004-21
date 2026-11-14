@@ -15,6 +15,7 @@ export function stepCombat(
     shots: 0,
     collected: 0,
     weaponDamage: {},
+    weaponHits: {},
   };
   const player = doc.player;
   player.invincible = Math.max(0, player.invincible - dt);
@@ -57,9 +58,12 @@ export function stepCombat(
       const damage = Math.min(enemy.hp, bullet.damage);
       enemy.hp -= damage;
       events.damage += damage;
-      if (bullet.weapon !== "enemy")
+      if (bullet.weapon !== "enemy") {
         events.weaponDamage![bullet.weapon] =
           (events.weaponDamage![bullet.weapon] || 0) + damage;
+        events.weaponHits![bullet.weapon] =
+          (events.weaponHits![bullet.weapon] || 0) + 1;
+      }
       if (enemy.hp <= 0)
         events.kills.push({
           enemy: { ...enemy },

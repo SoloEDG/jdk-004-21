@@ -17,9 +17,16 @@ export const UPGRADE_CATALOG: Upgrade[] = [
   {
     id: "haste",
     name: "超频回路",
-    description: "全部武器射速 +13%",
+    description: "缩短射击间隔 13%，不改变装填速度",
     category: "火力",
     max: 5,
+  },
+  {
+    id: "reload",
+    name: "快速装填",
+    description: "装填时间 -15%，与射速强化独立生效",
+    category: "火力",
+    max: 4,
   },
   {
     id: "speed",
@@ -59,21 +66,21 @@ export const UPGRADE_CATALOG: Upgrade[] = [
   {
     id: "pulse",
     name: "脉冲进化",
-    description: "升级脉冲步枪：伤害与射速提升",
+    description: "升级脉冲步枪：伤害、射速与弹匣提升",
     category: "武器",
     max: 4,
   },
   {
     id: "orbit",
     name: "环轨飞刃",
-    description: "解锁或升级环轨飞刃",
+    description: "解锁或升级环轨飞刃：提升威力与弹匣",
     category: "武器",
     max: 5,
   },
   {
     id: "nova",
     name: "新星爆发",
-    description: "解锁或升级新星爆发",
+    description: "解锁或升级新星爆发：提升威力与弹匣",
     category: "武器",
     max: 5,
   },

@@ -1,7 +1,8 @@
 import type { GameDoc, RunRecord } from "./types";
+import { createWeapon } from "../features/arsenal/model/stats";
 export function createRun(seed = 204004, records: RunRecord[] = []): GameDoc {
   return {
-    version: 1,
+    version: 2,
     seed,
     initialSeed: seed,
     nextId: 1,
@@ -19,7 +20,7 @@ export function createRun(seed = 204004, records: RunRecord[] = []): GameDoc {
     enemies: [],
     bullets: [],
     drops: [],
-    weapons: [{ id: "pulse", level: 1, cooldown: 0 }],
+    weapons: [createWeapon("pulse", 1)],
     upgrades: {},
     choices: [],
     xp: 0,
@@ -34,7 +35,9 @@ export function createRun(seed = 204004, records: RunRecord[] = []): GameDoc {
       taken: 0,
       collected: 0,
       shots: 0,
+      hits: 0,
       byWeapon: { pulse: 0, orbit: 0, nova: 0 },
+      hitsByWeapon: { pulse: 0, orbit: 0, nova: 0 },
     },
     records,
     notice: "等待接入战场",

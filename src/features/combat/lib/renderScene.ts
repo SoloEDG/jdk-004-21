@@ -1,4 +1,5 @@
 import type { GameDoc } from "../../../shared/types";
+import { recoveryStateOf } from "../../arsenal/model/readout";
 import { WIDTH, HEIGHT } from "../../../shared/types";
 export function renderScene(ctx: CanvasRenderingContext2D, d: GameDoc) {
   ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -113,6 +114,30 @@ export function renderScene(ctx: CanvasRenderingContext2D, d: GameDoc) {
   ctx.fillStyle = "#193b3b";
   ctx.fillRect(-3, -3, 6, 6);
   ctx.restore();
+  // Weapon recovery HUD: a ring per weapon that fills while it reloads or
+  // vents, so the battlefield shows the same state as the arsenal panel.
+  const recoveryWeapons = d.weapons.filter((w) => w.recovery !== "none");
+  recoveryWeapons.forEach((weapon, index) => {
+    const x = p.x + 34 + index * 22,
+      y = p.y - 34,
+      progress =
+        weapon.recoveryDuration > 0
+          ? 1 - Math.max(0, weapon.recoveryTime) / weapon.recoveryDuration
+          : 1;
+    ctx.strokeStyle =
+      recoveryStateOf(weapon.recovery) === "reloading" ? "#8ac6ff" : "#ffae70";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y, 7, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * progress);
+    ctx.stroke();
+    ctx.fillStyle = ctx.strokeStyle;
+    ctx.font = "7px monospace";
+    ctx.fillText(
+      recoveryStateOf(weapon.recovery) === "reloading" ? "R" : "V",
+      x - 2,
+      y + 2.5,
+    );
+  });
   ctx.fillStyle = "#526571";
   ctx.font = "10px monospace";
   ctx.fillText("SECTOR 07 / SIGNAL ACTIVE", 48, HEIGHT - 42);

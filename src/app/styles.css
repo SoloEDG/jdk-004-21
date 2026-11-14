@@ -992,3 +992,113 @@ footer .mono {
     font-size: 24px;
   }
 }
+.weapon {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: 12px 9px;
+}
+.weapon .level-pips {
+  position: static;
+  width: 100%;
+  margin: 8px 0 0;
+}
+.weapon-readout .bar {
+  margin-top: 0;
+}
+.weapon-readout {
+  width: 100%;
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid #2c4033;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.weapon-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 9px;
+  color: #8aa191;
+}
+.weapon-line b {
+  font-size: 10px;
+  font-weight: 400;
+  color: #d3e6d6;
+}
+.weapon-line b.warn {
+  color: #fbc778;
+}
+.weapon-state.reloading {
+  color: #8ac6ff;
+}
+.weapon-state.venting {
+  color: #ffae70;
+}
+.weapon-line.tiny {
+  font-size: 8px;
+  color: #6b7f73;
+  margin: 0;
+}
+.weapon-queued {
+  font: 8px "Space Grotesk", monospace;
+  color: #fbbf24;
+  border: 1px solid #574523;
+  border-radius: 3px;
+  padding: 2px 4px;
+  margin-left: auto;
+}
+.bar.ammo i.low {
+  background: #f0a46a;
+}
+.bar.heat i {
+  background: #67d0e0;
+}
+.bar.heat i.hot {
+  background: #f07a58;
+}
+.upgrade-preview {
+  margin-top: 12px;
+  padding-top: 9px;
+  border-top: 1px solid #2f4738;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.upgrade-preview > div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: #8ba795;
+}
+.upgrade-preview > div span.mono i {
+  font-style: normal;
+  color: #5f7d69;
+  margin: 0 4px;
+}
+.upgrade-preview em {
+  font-style: normal;
+  font-size: 8px;
+  line-height: 1.6;
+  color: #f2c46b;
+  margin-top: 3px;
+}
+.upgrade-options p {
+  margin-bottom: 0;
+}
+.damage-breakdown .totals {
+  color: #c9f6d4;
+  border-bottom: 0;
+  margin-top: 3px;
+}
+.weapon.locked {
+  padding-bottom: 12px;
+}
+@media (max-width: 700px) {
+  .weapon-readout {
+    font-size: 8px;
+  }
+  .weapon-line.tiny span:last-child {
+    display: none;
+  }
+}

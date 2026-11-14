@@ -34,10 +34,40 @@ export interface Drop extends Vec {
   value: number;
   life: number;
 }
+/**
+ * Runtime recovery state for a weapon. `reload` refills the magazine and
+ * `vent` clears accumulated heat; the two are mutually exclusive so one frame
+ * can never start two recoveries at once.
+ */
+export type WeaponRecovery = "none" | "reload" | "vent";
 export interface Weapon {
   id: WeaponId;
   level: number;
+  /** Seconds until the trigger is ready again. Never reset by upgrades. */
   cooldown: number;
+  /** Rounds left in the current magazine. */
+  ammo: number;
+  /** Current heat, `0..heatMax`. */
+  heat: number;
+  recovery: WeaponRecovery;
+  /** Seconds left in the active reload / vent cycle. */
+  recoveryTime: number;
+  /**
+   * Total duration of the active recovery, captured when it began. Upgrades
+   * chosen mid-recovery never shorten or restart the cycle already running.
+   */
+  recoveryDuration: number;
+  /**
+   * Magazine size captured when a reload began. A weapon upgrade bought while
+   * paused widens the magazine for future reloads only, never the one running.
+   */
+  reloadTarget: number;
+  /**
+   * Levels bought during an upgrade pause. They only take effect on the next
+   * legal shooting boundary, so a choice can never refill a magazine or skip
+   * an in-progress reload.
+   */
+  pendingLevels: number;
 }
 export interface Upgrade {
   id: string;
@@ -51,8 +81,12 @@ export interface RunStats {
   damage: number;
   taken: number;
   collected: number;
+  /** Projectiles launched, before collision. */
   shots: number;
+  /** Individual projectile impacts that dealt damage. */
+  hits: number;
   byWeapon: Record<WeaponId, number>;
+  hitsByWeapon: Record<WeaponId, number>;
 }
 export interface RunRecord {
   id: string;
@@ -61,11 +95,15 @@ export interface RunRecord {
   level: number;
   kills: number;
   damage: number;
+  /** Projectiles launched by the player. */
+  shots: number;
+  /** Projectile impacts that dealt damage. */
+  hits: number;
   weapons: string[];
   victory: boolean;
 }
 export interface GameDoc {
-  version: 1;
+  version: 2;
   seed: number;
   initialSeed: number;
   nextId: number;
@@ -101,6 +139,8 @@ export interface KillEvent {
 }
 export interface FrameEvents {
   weaponDamage?: Partial<Record<WeaponId, number>>;
+  /** Projectile impacts that actually subtracted enemy hp, per weapon. */
+  weaponHits?: Partial<Record<WeaponId, number>>;
   kills: KillEvent[];
   damage: number;
   taken: number;
